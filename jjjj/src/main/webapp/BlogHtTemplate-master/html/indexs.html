@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" charset="gbk" src="ueditor1_4_3_1-src/ueditor.config.js"></script>
+
+    <!--编辑器完整代码-->
+
+    <script type="text/javascript" charset="gbk" src="ueditor1_4_3_1-src/ueditor.all.js"> </script>
+</head>
+<body>
+<div>
+
+    <script id="editor" type="text/plain"></script>
+
+</div>
+<script type="text/javascript">
+
+    //实例化编辑器
+
+    var ue = UE.getEditor( 'editor', {
+
+        autoHeightEnabled: true,
+
+        autoFloatEnabled: true,
+
+        initialFrameWidth: 690,
+
+        initialFrameHeight:483
+
+    });
+</script>
+<a href="ueditor1_4_3_1-src/_examples/submitFormDemo.html">这里</a>
+</body>
+</html>
