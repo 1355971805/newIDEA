@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--IOC-->
+    <bean id="happyService" class="cn.happy.service.HappyService">
+        <!--DI依赖注入-->
+<property name="info">
+    <value>Spring</value>
+</property>
+    </bean>
+    <bean id="colorInk" class="cn.happy.prints.ink.ColorInk"></bean>
+    <bean id="grayInk" class="cn.happy.prints.ink.GrayInk"></bean>
+
+    <bean id="b5paper" class="cn.happy.prints.ppaper.B5paper"></bean>
+    <bean id="a4paper" class="cn.happy.prints.ppaper.A4paper"></bean>
+    <bean id="printes" class="cn.happy.prints.pranter.printers">
+        <!--DI依赖注入-->
+        <property name="ink" ref="colorInk">
+
+        </property>
+        <property name="paper" ref="b5paper"></property>
+    </bean>
+
+  <!--dao-->
+    <bean id="userDao" class="cn.happy.aop.UserDao"></bean>
+    <bean id="userService" class="cn.happy.aop.service.UserBiz">
+        <property name="dao" ref="userDao"></property>
+    </bean>
+
+    <!--增强配置-->
+    <bean id="beforeAdvice" class="cn.happy.aop.LoggerBefore"></bean>
+    <!--后置增强-->
+    <bean id="afterAdvice" class="cn.happy.aop.LoggerAfter"></bean>
+
+    <!--aop-->
+    <aop:config>
+        <!--切点，拦截业务类-->
+        <aop:pointcut id="pointcut" expression="execution(* *..service.*.*(..))"></aop:pointcut>
+        <aop:advisor  advice-ref="beforeAdvice" pointcut-ref="pointcut"></aop:advisor>
+        <aop:advisor advice-ref="afterAdvice" pointcut-ref="pointcut"></aop:advisor>
+    </aop:config>
+</beans>

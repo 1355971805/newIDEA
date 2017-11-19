@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--IOC-->
+<bean id="car" class="cn.happy.day03.Car">
+    <property name="color" value="pink"></property>
+</bean>
+    <bean id="car2" class="cn.happy.day03.Car">
+        <property name="color" value="pink"></property>
+    </bean>
+
+    <bean id="student" class="cn.happy.day03.Student">
+        <constructor-arg index="0" value="巫昂"></constructor-arg>
+        <constructor-arg index="1" value="15"></constructor-arg>
+        <constructor-arg index="2" ref="car"></constructor-arg>
+    </bean>
+    <bean id="stus" class="cn.happy.day03.Student" p:name="wei" p:age="15" p:car-ref="car"></bean>
+
+
+    <!--集合属性array-->
+    <bean id="conn" class="cn.happy.day03.Connection" >
+        <property name="names">
+            <array>
+                <value>aaa</value>
+                <value>aaa</value> <value>aaa</value>
+            </array>
+        </property>
+    </bean>
+    <bean id="lists" class="cn.happy.day03.Connection" >
+        <property name="list">
+            <list>
+             <ref bean="car"></ref>
+                <ref bean="car2"></ref>
+            </list>
+        </property>
+    </bean>
+    <bean id="mapcon" class="cn.happy.day03.Connection" >
+        <property name="map">
+          <map>
+              <entry key="gee">
+
+                 <ref bean="car"></ref>
+              </entry>
+              <entry key="g">
+
+                  <ref bean="car2"></ref>
+              </entry>
+          </map>
+        </property>
+    </bean>
+
+    <bean id="pro" class="cn.happy.day03.Connection" >
+        <property name="properties">
+            <props>
+                <prop key="001">本清</prop>
+                <prop key="002">倩</prop>
+            </props>
+
+        </property>
+    </bean>
+</beans>
