@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.happy.dao.IStudentInfoDao" >
+   <!-- <cache eviction="FIFO" flushInterval="60000" readOnly="false" size="10"/>-->
+    <cache/>
+    <sql id="cnms">
+        stuid,stuname,stuage,studate
+    </sql>
+    <resultMap id="studentMap" type="studentInfo">
+
+    </resultMap>
+    <insert id="add">
+        INSERT INTO studentinfo(stuName,stuAge,stuDate)VALUES (#{stuName},#{stuAge},#{stuDate})
+    </insert>
+    <!--查询所有-->
+    <select id="getAll" resultMap="studentMap">
+        SELECT <include refid="cnms"></include> FROM StudentInfo
+    </select>
+    <!--待条件查询-->
+    <select id="getStudentInfo" resultType="cn.happy.entity.StudentInfo">
+        SELECT * FROM StudentInfo WHERE  StuId=#{StuId}
+    </select>
+    <select id="getStudentInfo2" resultType="cn.happy.entity.StudentInfo">
+        SELECT * FROM StudentInfo WHERE  StuId=#{StuId}
+    </select>
+
+    <delete id="delstu">
+        DELETE FROM studentinfo WHERE stuId=#{stuId}
+    </delete>
+    <update id="updatestu">
+        UPDATE studentinfo SET stuName=#{stuName} WHERE stuId=#{stuId}
+    </update>
+
+    <select id="getStu" resultMap="studentMap">
+       <!--SELECT *FROM studentinfo where stuName LIKE  '%' #{stuName} '%' AND stuage>#{stuAge}
+       SELECT *FROM studentinfo where stuName LIKE  '%${stuName}%' AND stuage>${stuAge}-->
+        SELECT *FROM studentinfo where stuName LIKE  concat('%',#{stuName},'%') AND stuage>#{stuAge}
+    </select>
+    <select id="find" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo where stuName LIKE  concat('%' #{stuName} '%') AND stuage>#{stuAge}
+    </select>
+    <select id="finds" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo where stuName LIKE  concat('%' #{0} '%') AND stuage>#{1}
+    </select>
+    <select id="fidsif" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo
+        <where>
+        <if test="stuName!=null">
+           AND stuName LIKE  concat('%' #{stuName} '%')
+        </if>
+        <if test="stuAge">
+            AND stuage>#{stuAge}
+        </if>
+        </where>
+    </select>
+    <select id="fidsChoose" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo
+        <where>
+            <choose>
+        <when test="stuName!=null">
+            AND stuName LIKE  concat('%' #{stuName} '%')
+        </when>
+        <when test="stuAge">
+            AND stuage>#{stuAge}
+        </when>
+                <otherwise>
+                    AND 1=2
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="fidsforeach" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo
+        <where>
+           <if test="array.length>0">
+               stuId IN
+               <foreach collection="array" open="(" close=")" separator="," item="stuno">
+                   #{stuno}
+               </foreach>
+           </if>
+        </where>
+    </select>
+
+    <select id="fidsforeachStudent" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo
+        <where>
+            <if test="list.size>0">
+                stuId IN
+                <foreach collection="list" open="(" close=")" separator="," item="stu">
+                    #{stu.stuId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="fidsforeachlist" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT *FROM studentinfo
+        <where>
+            <if test="list.size>0">
+                stuId IN
+                <foreach collection="list" open="(" close=")" separator="," item="stuno">
+                    #{stuno}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!--map-->
+    <select id="fidsmap" resultType="cn.happy.entity.StudentInfo">
+
+        SELECT * FROM studentinfo WHERE  stuName LIKE  concat('%' #{stuName} '%') AND stuId IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+         #{item}
+         </foreach>
+         </select>
+
+    <resultMap id="deptMapper" type="cn.happy.entity.Dept">
+        <id column="deptNo" property="deptNo"></id>
+        <result column="deptName" property="deptName"/>
+        <collection property="emps" ofType="Emp">
+            <id column="empNo" property="empNo"></id>
+            <result column="empName" property="empName"/>
+        </collection>
+    </resultMap>
+
+    <select id="getEmpsByDeptNo" resultMap="deptMapper">
+        select dept.deptNo,deptName,empNo,empName
+        from dept,emp
+        where dept.deptNo=emp.deptNo
+        and dept.deptNo=#{deptNo}
+
+    </select>
+
+    <update id="modify">
+        UPDATE studentinfo
+        <set>
+            <if test="stuName!=null">stuName=#{stuName},</if>
+            <if test="stuAge!=null">stuAge=#{stuAge},</if>
+        </set>
+        WHERE stuId=#{stuId}
+    </update>
+
+    <update id="mod" parameterType="StudentInfo">
+        UPDATE studentinfo
+        <trim prefix="set" suffixOverrides="," suffix="where stuId=#{stuId}">
+            <if test="stuName!=null">stuName=#{stuName},</if>
+            <if test="stuAge!=null">stuAge=#{stuAge},</if>
+        </trim>
+    </update>
+
+
+<resultMap id="deptsql" type="Dept">
+    <id column="deptNo" property="deptNo"></id>
+    <result column="deptName" property="deptName"/>
+    <collection property="emps" ofType="Emp" select="selectby" column="deptNo"></collection>
+
+</resultMap>
+    <select id="selectby" resultType="Emp">
+        SELECT *FROM emp WHERE deptNo=#{deptNo}
+    </select>
+    <select id="getEmpsByDeptNoS" resultMap="deptsql">
+        SELECT deptNo,deptName
+        from dept
+        WHERE deptNo=#{deptNo}
+    </select>
+
+
+<!--多对一-->
+    <resultMap id="empMapper" type="Emp">
+        <id column="empNo" property="empNo"></id>
+        <result column="empName" property="empName"></result>
+        <association property="dept" javaType="Dept">
+            <id column="deptNo" property="deptNo"></id>
+            <result column="deptName" property="deptName"></result>
+        </association>
+    </resultMap>
+    <select id="getEmpNo" resultMap="empMapper">
+        select dept.deptNo,deptName,empNo,empName
+        from dept,emp
+        where dept.deptNo=emp.deptNo
+        and empNo=#{empNo}
+    </select>
+
+    <!--多条件 多对一-->
+    <resultMap id="deptsqls" type="Emp">
+        <id column="empNo" property="empNo"></id>
+        <result column="empName" property="empName"></result>
+        <association property="dept" javaType="Dept" select="selectbys" column="deptNo"></association>
+    </resultMap>
+    <select id="selectbys" resultType="Dept">
+        SELECT *FROM dept WHERE deptNo=#{deptNo}
+    </select>
+    <select id="getEmpNos" resultMap="deptsqls">
+        SELECT  deptNo,empNo,empName
+        from emp
+        WHERE empNo=#{empNo}
+    </select>
+
+
+<!--自链接-->
+    <resultMap id="getCatery" type="Category">
+        <id column="cid" property="cid"></id>
+        <result column="cname" property="cname"></result>
+        <result column="pid" property="pid"></result>
+        <collection property="list" ofType="Category" select="getCate" column="cid"></collection>
+    </resultMap>
+    <select id="getCate" resultMap="getCatery">
+        SELECT *FROM  category WHERE pid=#{pid}
+    </select>
+
+    
+
+    <resultMap id="sts" type="Teacher">
+        <id column="tid" property="tid"></id>
+        <result column="tname" property="tname"></result>
+        <collection property="stus" ofType="Students">
+            <id column="sid" property="sid"></id>
+            <result column="sname" property="sname"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getts" resultMap="sts">
+        SELECT  students.sid,sname,teacher.tid,tname FROM
+        students,ts,teacher WHERE students.sid=ts.sid
+        AND teacher.tid=ts.tid
+        AND  teacher.tid=#{tid}
+    </select>
+</mapper>

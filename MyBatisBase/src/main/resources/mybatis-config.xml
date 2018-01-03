@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- 通过这个配置文件,完成mybatis与数据库的连接 -->
+<configuration>
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+        
+        <setting name="lazyLoadingEnabled" value="true"/>
+            <setting name="aggressiveLazyLoading" value="true"/>
+       
+    </settings>
+
+    <typeAliases>
+        <!--
+          <typeAlias alias="Role" type="com.bdqn.pojo.User"></typeAlias>
+        -->
+        <package name="cn.happy.entity"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <!-- 配置事物管理采用JDBC  -->
+            <transactionManager type="JDBC"></transactionManager>
+            <!-- POOLED:mybatis的数据源,JNDI:基于tomcat的数据源 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql:///Student"/>
+                <property name="username" value="root"/>
+                <property name="password" value=""/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="cn/happy/dao/StudentInfo.xml"/>
+    </mappers>
+</configuration>
+        <!--
+        人生百态，谁知谁
+        物逝皆悲，自愈自-->
